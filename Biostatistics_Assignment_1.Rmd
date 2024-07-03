@@ -1,0 +1,36 @@
+---
+title: "Biostatistics Assignment 1"
+author: "S2550941 - Hrushikesh Vazurkar"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Question 6
+
+```{r Load exbootle file data}
+require(readxl)
+data_exbootle <- read_excel("data_exbootle.xls")
+data_exbootle_2 <- data_exbootle
+data_exbootle_2
+```
+```{r Encode values as factors(String) for Feeding Type and Sex}
+data_exbootle_2$sex <- factor(data_exbootle_2$sex, levels = c(1, 0), 
+                            labels = c("Boys", "Girls"))
+data_exbootle_2$feeding_type <- factor(data_exbootle_2$feeding_type, levels = c(1, 2, 3), labels = c("Bottle Only", "Breast and Supplement both", "Breast only"))
+data_exbootle_2
+```
+
+```{r GLM for Logistic Regression - Binomial family of functions}
+res_binom <- glm(cbind(D, not_D) ~ feeding_type + sex, family = "binomial",
+                 data = data_exbootle_2)
+summary(res_binom)
+exp(res_binom$coefficient)[2:5]
+exp(confint.default(res_binom, level = 0.95))[2:4,]
+```
